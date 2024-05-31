@@ -6,7 +6,7 @@
 /*   By: wweerasi <wweerasi@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 17:05:58 by wweerasi          #+#    #+#             */
-/*   Updated: 2024/05/31 16:00:45 by wweerasi         ###   ########.fr       */
+/*   Updated: 2024/05/31 16:42:34 by wweerasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,14 @@ static char *l_read(int fd, char *buf, char **stash)
         if (bytes_read == -1)
             return (ft_free(*stash));
         if (bytes_read == 0)
-            break;
+			return (NULL);
+            //break;
         buf[bytes_read] = '\0';
 		tmp_stash = *stash;
         *stash = ft_strjoin(tmp_stash, buf);
         ft_free(tmp_stash);
 		if (!stash)
-			return(NULL);
+			return(ft_free(*stash));
 	}
 	line = l_construct(stash);
 	return(line);
@@ -81,7 +82,7 @@ char *get_next_line(int fd)
     if (!stash)
         stash = ft_strdup("");
 	if (!stash)
-		return (NULL);
+		return (ft_free(stash));
     line = l_read(fd, buffer, &stash);
     if (!line)
         line = ft_free(line);
