@@ -6,7 +6,7 @@
 /*   By: wweerasi <wweerasi@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 17:05:58 by wweerasi          #+#    #+#             */
-/*   Updated: 2024/05/29 20:08:48 by wweerasi         ###   ########.fr       */
+/*   Updated: 2024/05/31 16:00:45 by wweerasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,36 @@ char	*ft_free(char *s)
 	s = NULL;
 	return (s);
 }
-//static char *l_construct
+
+static char *l_construct(char **stash)
+{
+	char *line;
+	char *res;
+
+	if (**stash)
+	{
+		line = ft_substr(*stash, 0, (ft_strchr(*stash,'\n') - *stash  + 2));
+		if (line)
+        {
+            res = ft_strdup(ft_strchr(*stash, '\n') + 1);
+            *stash = ft_strdup(res);
+            ft_free(res);
+        }
+        else
+            ft_free(*stash);
+	}
+	else
+		line = ft_strdup("");
+	return (line);
+}
+
 static char *l_read(int fd, char *buf, char **stash)
 {
     int     bytes_read;
     char    *tmp_stash;
     char    *line;
-	char	*res;
 
+	line = NULL;
     bytes_read = BUFFER_SIZE;
     while(!ft_strchr(*stash, '\n'))
     {
@@ -39,16 +61,12 @@ static char *l_read(int fd, char *buf, char **stash)
             break;
         buf[bytes_read] = '\0';
 		tmp_stash = *stash;
-        *stash = ft_strjoin(tmp_stash, buf);// shouldn't I check if this exist
+        *stash = ft_strjoin(tmp_stash, buf);
         ft_free(tmp_stash);
+		if (!stash)
+			return(NULL);
 	}
-	line = ft_substr(*stash, 0, (ft_strchr(*stash,'\n') - *stash  + 2));
-	if (line)
-		res = ft_strdup(ft_strchr(*stash, '\n') + 1);
-	else 
-		return (ft_free(*stash));
-	*stash = ft_strdup(res);
-   	ft_free(res);
+	line = l_construct(stash);
 	return(line);
 }
 
@@ -70,8 +88,8 @@ char *get_next_line(int fd)
     return (line);
 }
 
-
 /*
+//main to see the output of strjoin
 int main(void)
 {
 	char *s1;
@@ -83,6 +101,7 @@ int main(void)
 	free(j);
 }*/
 /*
+//main to test output of a empty line
 int main(void)
 {
 	int	fd;
@@ -94,6 +113,7 @@ int main(void)
 	printf("Buffer: -%s-, Bytes_read: %i\n", buf, bytes_read);
 }*/
 /*
+//main to test GNL function
 int main()
 {
 	int fd;
@@ -106,6 +126,35 @@ int main()
 	{
 		line = get_next_line(fd);
 		printf("line [%i] : %s", i++, line);
+	}
+}*/
+/*
+//main to test if  line extraction logic works
+int main(void)
+{
+	int fd;
+	char *stash;
+	char *line;
+	char *res;
+
+	line = ft_strdup("");
+	fd = open("ISF.txt", O_RDONLY);
+	while (line)
+	{
+		stash = get_next_line(fd);
+		printf("stash: %s", stash);
+
+		line = ft_substr(stash, 0, (ft_strchr(stash,'\n') - stash  + 1));
+		printf("line: %s", line);
+		if (line)
+		{
+			res = ft_strdup(ft_strchr(stash, '\n') + 1);
+			stash = ft_strdup(res);
+			printf("res: %s\n", res);
+			ft_free(res);
+		}
+		else 
+			ft_free(stash);
 	}
 }*/
 
