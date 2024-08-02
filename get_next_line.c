@@ -6,7 +6,7 @@
 /*   By: wweerasi <wweerasi@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 17:05:58 by wweerasi          #+#    #+#             */
-/*   Updated: 2024/08/01 20:59:28 by wweerasi         ###   ########.fr       */
+/*   Updated: 2024/08/02 21:04:21 by wweerasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,33 +25,31 @@ static char	*l_construct(char **stash)
 	char	*res;
 	char	*l_end;
 
-	line = NULL;
-	if (**stash)
+	if (!**stash)
+		return (NULL);
+	l_end = ft_strchr(*stash, '\n');
+	if (l_end)
 	{
-		l_end = ft_strchr(*stash, '\n');
-		if (l_end)
-		{
-			line = ft_substr(*stash, 0, (l_end - *stash + 1));
-			res = ft_strdup(ft_strchr(*stash, '\n') + 1);
-			ft_free(*stash);
-			*stash = ft_strdup(res);
-			ft_free(res);
-		}
-		else
-		{
-			line = ft_strdup(*stash);
-			ft_free(*stash);
-			*stash = NULL;
-		}
+		line = ft_substr(*stash, 0, (l_end - *stash + 1));
+		res = ft_strdup(ft_strchr(*stash, '\n') + 1);
+		ft_free(*stash);
+		*stash = ft_strdup(res);
+		ft_free(res);
+	}
+	else
+	{
+		line = ft_strdup(*stash);
+		ft_free(*stash);
+		*stash = NULL;
 	}
 	return (line);
 }
 
 static char	*l_read(int fd, char *buf, char **stash)
 {
-	int	bytes_read;
 	char	*tmp_stash;
 	char	*line;
+	int		bytes_read;
 
 	line = NULL;
 	while (!ft_strchr(*stash, '\n'))
@@ -77,18 +75,19 @@ char	*get_next_line(int fd)
 	static char	*stash;
 	char		*buffer;
 	char		*line;
+	int			bytes_read;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
-		return (NULL);
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (fd < 0 || BUFFER_SIZE <= 0 || !buffer)
+		return (ft_free(buffer));
 	if (!stash)
 	{
-		stash = ft_strdup("");
-		if (!stash)
-			return (NULL);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read < 0)
+			return (ft_free(buffer));
+		buffer[bytes_read] = '\0';
+		stash = ft_strdup(buffer);
 	}
-	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!buffer)
-		return (NULL);
 	line = l_read(fd, buffer, &stash);
 	ft_free(buffer);
 	if (!line)
@@ -101,7 +100,10 @@ char	*get_next_line(int fd)
 }
 
 //main to test GNL function
-/*
+
+#include <fcntl.h>
+#include <stdio.h>
+
 int main()
 {
 	int fd;
@@ -109,11 +111,14 @@ int main()
 	static int i;
 	
 	line = ft_strdup("");
-	fd = open("ISF.txt", O_RDONLY);
-	while (i < 30)
+	fd = open("bible.txt", O_RDONLY);
+	while (line)
 	{
 		line = get_next_line(fd);
 		printf("line [%i] : %s", i++, line);
 		free(line);
 	}
-}*/
+	close(fd);
+	return (0);
+}
+
