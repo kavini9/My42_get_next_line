@@ -6,12 +6,13 @@
 /*   By: wweerasi <wweerasi@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 20:35:13 by wweerasi          #+#    #+#             */
-/*   Updated: 2024/08/01 20:46:59 by wweerasi         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:41:47 by wweerasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
+# define FD_MAX 1023
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1024
@@ -19,7 +20,6 @@
 
 # include <unistd.h>
 # include <stdlib.h>
-# include <limits.h>
 
 char	*get_next_line(int fd);
 char	*ft_strdup(const char *s1);

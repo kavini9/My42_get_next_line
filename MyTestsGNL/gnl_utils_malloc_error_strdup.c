@@ -1,35 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   gnl_utils_malloc_error_strdup.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wweerasi <wweerasi@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/20 20:33:43 by wweerasi          #+#    #+#             */
-/*   Updated: 2024/08/21 16:55:54 by wweerasi         ###   ########.fr       */
+/*   Created: 2024/08/19 21:41:12 by wweerasi          #+#    #+#             */
+/*   Updated: 2024/08/21 18:13:00 by wweerasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
-char	*ft_strdup(const char *s1)
+void	*fake_malloc(int amount)
 {
-	char	*s2;
-	size_t	len;
-
-	len = ft_strlen(s1);
-	s2 = malloc(sizeof(char) * (len + 1));
-	if (s2 != NULL)
-	{
-		while (*s1 != '\0')
-		{
-			*s2++ = *s1++;
-		}
-		*s2 = '\0';
-		s2 -= len;
-	}
-	return (s2);
+	if (amount)
+		return (NULL);
+	else
+		return (NULL);
 }
+
+//#define malloc fake_malloc
+
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
@@ -50,6 +43,30 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (new_s);
 }
 
+char	*ft_strdup(const char *s1)
+{
+	char	*s2;
+	size_t	len;
+	static int i;
+
+	len = ft_strlen(s1);
+	if (i == 1)
+		s2 = fake_malloc(sizeof(char) * (len + 1));
+	else
+		s2 = malloc(sizeof(char) * (len + 1));
+	if (s2 != NULL)
+	{
+		while (*s1 != '\0')
+		{
+			*s2++ = *s1++;
+		}
+		*s2 = '\0';
+		s2 -= len;
+	}
+	i++;
+	return (s2);
+}
+
 char	*ft_strchr(const char *s, int c)
 {
 	while (*s != (char)c)
@@ -63,8 +80,11 @@ size_t	ft_strlen(const char *s)
 	size_t	len;
 
 	len = 0;
-	while (*s++ != '\0')
+	while (*s != '\0')
+	{
 		len++;
+		s++;
+	}
 	return (len);
 }
 

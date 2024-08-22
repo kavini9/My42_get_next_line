@@ -1,16 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   gnl_utils_malloc_error_strjoin.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wweerasi <wweerasi@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/20 20:33:43 by wweerasi          #+#    #+#             */
-/*   Updated: 2024/08/21 16:55:54 by wweerasi         ###   ########.fr       */
+/*   Created: 2024/08/20 13:42:09 by wweerasi          #+#    #+#             */
+/*   Updated: 2024/08/21 18:26:42 by wweerasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include "get_next_line_bonus.h"
+
+void	*fake_malloc(int amount)
+{
+	if (amount)
+		return (NULL);
+	else
+		return (NULL);
+}
+
+//#define malloc fake_malloc
 
 char	*ft_strdup(const char *s1)
 {
@@ -35,9 +46,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*new_s;
 	int		len;
+	static int	j;
 
 	len = ft_strlen(s1) + ft_strlen(s2);
-	new_s = malloc((len + 1) * sizeof(char));
+	if (j == 0)
+		new_s = fake_malloc((len + 1) * sizeof(char));
+	else
+		new_s = malloc((len + 1) * sizeof(char));
 	if (new_s != NULL)
 	{
 		while (*s1 != '\0')
@@ -47,6 +62,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		*new_s = '\0';
 		new_s -= len;
 	}
+	j++;
 	return (new_s);
 }
 
@@ -90,3 +106,4 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	return (sub_s);
 }
+
